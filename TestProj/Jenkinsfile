@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/it-outsource-jayesh/TestProj.git'
+            }
+        }
+
+        stage('Restore Packages') {
+            steps {
+                sh 'dotnet restore'    // use 'bat' on Windows
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'dotnet build --configuration Release'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'dotnet test --no-build --verbosity normal'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Build Pipeline Finished!"
+        }
+    }
+}
